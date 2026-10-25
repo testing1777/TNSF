@@ -1,0 +1,24 @@
+services:
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: tnsf_ejournal
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  api:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/tnsf_ejournal
+      PORT: 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+volumes:
+  mongo_data:
